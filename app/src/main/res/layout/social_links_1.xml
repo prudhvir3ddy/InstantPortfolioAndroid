@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/social_media_1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:orientation="horizontal"
+    >
+
+  <ImageView
+      android:id="@+id/linkedin_iv"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:contentDescription="@string/linkedin"
+      android:padding="16dp"
+      android:src="@drawable/ic_linkedin"
+      />
+
+  <ImageView
+      android:id="@+id/twitter_iv"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:contentDescription="@string/twitter"
+      android:padding="16dp"
+      android:src="@drawable/ic_twitter"
+      />
+
+  <ImageView
+      android:id="@+id/github_iv"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:contentDescription="@string/github"
+      android:padding="16dp"
+      android:src="@drawable/ic_github_logo"
+      />
+  <ImageView
+      android:id="@+id/playstore_iv"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:contentDescription="@string/playstore"
+      android:padding="16dp"
+      android:src="@drawable/ic_playstore"
+      />
+
+  <ImageView
+      android:id="@+id/gmail_iv"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:contentDescription="@string/gmail"
+      android:padding="16dp"
+      android:src="@drawable/ic_gmail"
+      />
+
+</LinearLayout>

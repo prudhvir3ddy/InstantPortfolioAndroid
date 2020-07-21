@@ -1,0 +1,21 @@
+<resources>
+  <string name="app_name">Prudhvi Reddy\'s Portfolio</string>
+
+  <!-- header layout -->
+  <string name="hero_name">Prudhvi Reddy</string>
+  <string name="hero_image">hero_image</string>
+  <string name="hero_title">Software Engineer/ Developer</string>
+  <string name="hero_roles">India Scholar | Certified Android Dev | Summer Of Code  | Code-in</string>
+  <string name="role_intro_1">I Figure out things, solve some problems and I can read documentation, errors correctly to build scalable, testable, efficient and maintainable products.</string>
+  <string name="role_intro_2">A Software Developer 🚀 with experience of building Web 🕸️ and Mobile 📱 applications.</string>
+  <string name="linkedin">https://www.linkedin.com/in/prudhvir3ddy/</string>
+  <string name="twitter">https://twitter.com/@prudhvir3ddy</string>
+  <string name="github">https://github.com/prudhvir3ddy</string>
+  <string name="playstore">https://play.google.com/store/apps/dev?id=4827386835890009798</string>
+  <string name="gmail">mailto:prudhvireddy.m01@gmail.com</string>
+  <string name="instagram">https://www.instagram.com/prudhvir3ddy/</string>
+  <string name="medium">https://medium.com/@prudhvir3ddy</string>
+  <string name="facebook">https://www.facebook.com/prudhvir3ddy</string>
+  <string name="youtube">https://www.youtube.com/channel/UC-VnpasahhnVnNOhyQ1Y5JQ</string>
+  <string name="share">share</string>
+</resources>

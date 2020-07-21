@@ -1,0 +1,147 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+  signingConfigs {
+    release {
+      storeFile file(
+          '/Users/prudhvimekala/Documents/android_studio_projects/PrudhviReddysPortfolio/keystore'
+      )
+      storePassword 'toooor'
+      keyPassword 'toooor'
+      keyAlias 'key0'
+    }
+  }
+  compileSdkVersion 29
+  buildToolsVersion "30.0.0"
+
+  defaultConfig {
+    applicationId "com.prudhvir3ddy.portfolio"
+    minSdkVersion 23
+    targetSdkVersion 29
+    versionCode 1
+    versionName "1.0"
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  flavorDimensions "experience"
+  productFlavors {
+    instant {
+      versionCode 3
+    }
+    installed {
+      versionCode 4
+    }
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+      signingConfig signingConfigs.release
+    }
+  }
+}
+
+dependencies {
+  implementation fileTree(dir: "libs", include: ["*.jar"])
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation 'androidx.core:core-ktx:1.3.0'
+  implementation 'androidx.appcompat:appcompat:1.1.0'
+  implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+  implementation "com.google.android.gms:play-services-instantapps:17.0.0"
+}
+
+//1
+project.afterEvaluate {
+  //2
+  ext.getSigningConfig = { variant ->
+    return variant.signingConfig ?: variant.buildType.signingConfig
+  }
+  Properties properties = new Properties()
+  properties.load(project.rootProject.file('local.properties').newDataInputStream())
+  def bundletool = properties.getProperty('bundletool')
+
+  android.applicationVariants.all { variant ->
+    //3
+    task "assembleSplits${variant.name.capitalize()}"(type: Exec, dependsOn: "bundle",
+        group: "build") {
+      //1
+      workingDir project.rootDir
+      //2
+      commandLine = ["java",
+          "-jar", bundletool, "build-apks",
+          "--bundle=${project.buildDir}/outputs/bundle/${variant.name}/app-instant-release.aab",
+          "--output=${project.buildDir}/outputs/splits/${variant.name}/app.apks",
+          "--connected-device",
+          "--ks=${getSigningConfig()?.storeFile}",
+          "--ks-pass=pass:${getSigningConfig()?.storePassword}",
+          "--ks-key-alias=${getSigningConfig()?.keyAlias}",
+          "--key-pass=pass:${getSigningConfig()?.keyPassword}",
+          "--adb=${android.getAdbExe()}"
+      ]
+      //3
+      doFirst {
+        mkdir "${project.buildDir}/outputs/splits/${variant.name}"
+        println "Running bundletool:\n${commandLine.join(" ")}"
+      }
+      //4
+      doFirst {
+        delete "${project.buildDir}/outputs/splits/${variant.name}"
+      }
+      //5
+      doLast {
+        println "Creating splits for ${variant.name}"
+      }
+    }
+    task "runinstant${variant.name.capitalize()}"(type: ExecInstantApp,
+        dependsOn: "assembleSplits${variant.name.capitalize()}", group: "build") {
+      workingDir project.rootDir
+      androidSdkPath = android.sdkDirectory.path
+      apksPath = "${project.buildDir}/outputs/splits/${variant.name}/app.apks"
+    }
+  }
+}
+
+class ExecInstantApp extends Exec {
+  //1
+  @Input
+  //2
+  @Option(option = "androidSdk", description = "Android SDK path")
+  //3
+  String androidSdkPath
+
+  @Input
+  @Option(option = "apksPath", description = "App apk splits path")
+  //4
+  String apksPath
+
+  @Input
+  //5
+  @Optional
+  @Option(option = "url", description = "Url to launch Instant App")
+  //6
+  String url
+
+  @Override
+  protected void exec() {
+    if (url != null) {
+      commandLine = [
+          "${androidSdkPath}/extras/google/instantapps/ia",
+          "--debug", "run", apksPath, "-u", url
+      ]
+    } else {
+      commandLine = [
+          "${androidSdkPath}/extras/google/instantapps/ia", "--debug", "run", apksPath
+      ]
+    }
+
+    println "Running ia:\n${commandLine.join(" ")}"
+
+    super.exec()
+  }
+}
+
