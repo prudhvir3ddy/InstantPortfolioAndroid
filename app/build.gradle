@@ -22,8 +22,7 @@ android {
         applicationId "com.prudhvir3ddy.portfolio"
         minSdkVersion 23
         targetSdk 35
-        versionCode 1
-        versionName "1.0"
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -45,16 +44,16 @@ android {
     flavorDimensions += "experience"
     productFlavors {
         instant {
-            versionCode 5
+            versionCode 10
         }
         installed {
-            versionCode 6
+            versionCode 1000
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -79,7 +78,6 @@ dependencies {
 }
 
 project.afterEvaluate {
-  //2
   ext.getSigningConfig = { variant ->
     return variant.signingConfig ?: variant.buildType.signingConfig
   }
@@ -88,7 +86,6 @@ project.afterEvaluate {
   def bundletool = "./bundletool-all-1.0.0.jar"
 
   android.applicationVariants.configureEach { variant ->
-    //3
     task "assembleSplits${variant.name.capitalize()}"(type: Exec, dependsOn: "bundle",
         group: "build") {
       //1
@@ -105,16 +102,13 @@ project.afterEvaluate {
           "--key-pass=pass:${getSigningConfig()?.keyPassword}",
           "--adb=${android.getAdbExe()}"
       ]
-      //3
       doFirst {
         mkdir "${project.buildDir}/outputs/splits/${variant.name}"
         println "Running bundletool:\n${commandLine.join(" ")}"
       }
-      //4
       doFirst {
         delete "${project.buildDir}/outputs/splits/${variant.name}"
       }
-      //5
       doLast {
         println "Creating splits for ${variant.name}"
       }
