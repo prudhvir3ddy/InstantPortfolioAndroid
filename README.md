@@ -6,6 +6,24 @@ App has two flavours
 - installed ( installable app from playstore )
 
 
+To run an instant app in local, run these commands
+
+```groovy
+ ./gradlew assembleSplitsInstantRelease
+ ./gradlew runinstantInstantRelease
+```
+
+To publish the app, use android studio to generate bundles regularly. 
+
+When uploading in playstore, make sure to have aab version of the instant app has less version code than the main app 
+
+
+Also, select instant app here for uploading instant app build
+![Screenshot 2024-12-22 at 8 46 46 PM](https://github.com/user-attachments/assets/ded71000-f7e3-46f5-8c53-2ac837b9b372)
+
+
+
+
 ## Opt-in to Instant app to experience instant app in playstore
 https://support.google.com/googleplay/answer/7240211?hl=en
 
