@@ -1,5 +1,9 @@
 # InstantPortfolioAndroid
 
+
+<img width="358" alt="Screenshot 2024-12-22 at 11 42 52 PM" src="https://github.com/user-attachments/assets/2e97f12d-483a-4d1f-9af9-5a377f6dfc25" />
+
+
 App has two flavours 
 
 - instant ( one that works with try now )
