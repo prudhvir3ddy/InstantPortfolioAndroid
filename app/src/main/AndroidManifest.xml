@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.prudhvir3ddy.portfolio">
+    xmlns:tools="http://schemas.android.com/tools">
 
   <application
       android:allowBackup="true"
@@ -12,6 +11,7 @@
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
     <activity
+        android:exported="true"
         android:name=".SplashActivity"
         android:theme="@style/AppTheme.Launcher">
       <intent-filter>
@@ -20,27 +20,35 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name=".MainActivity">
+    <activity
+        android:exported="true"
+        android:name=".MainActivity">
+
+      <meta-data
+          android:name="default-url"
+          android:value="https://prudhvir3ddy.github.io/mobile" />
+      <tools:validation testUrl="https://prudhvir3ddy.github.io/mobile" />
+
       <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
 
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
 
-        <data
-            android:host="prudhvir3ddy.github.io"
-            android:path="/mobile"
-            android:scheme="https" />
-        <data
-            android:host="prudhvir3ddy.github.io"
-            android:path="/mobile"
-            android:scheme="http" />
+        <data android:scheme="https" />
+        <data android:host="prudhvir3ddy.github.io" />
+        <data android:path="/mobile" />
       </intent-filter>
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
 
-      <meta-data
-          android:name="default-url"
-          android:value="https://prudhvir3ddy.github.io/mobile" />
-      <tools:validation testUrl="https://prudhvir3ddy.github.io/mobile" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data android:scheme="http" />
+        <data android:host="prudhvir3ddy.github.io" />
+        <data android:path="/mobile" />
+      </intent-filter>
     </activity>
   </application>
 

@@ -1,62 +1,83 @@
 plugins {
-  alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-  namespace 'com.prudhvir3ddy.portfolio'
-  signingConfigs {
-    release {
-      storeFile file(
-          '/Users/prudhvimekala/Documents/android_studio_projects/PrudhviReddysPortfolio/keystore'
-      )
-      storePassword 'toooor'
-      keyPassword 'toooor'
-      keyAlias 'key0'
+    namespace 'com.prudhvir3ddy.portfolio'
+    signingConfigs {
+        release {
+            storeFile file(
+                    './../keystore'
+            )
+            storePassword 'toooor'
+            keyPassword 'toooor'
+            keyAlias 'key0'
+        }
     }
-  }
-  compileSdk 34
+    compileSdk 35
 
-  defaultConfig {
-    applicationId "com.prudhvir3ddy.portfolio"
-    minSdkVersion 23
-    targetSdk 34
-    versionCode 1
-    versionName "1.0"
+    defaultConfig {
+        applicationId "com.prudhvir3ddy.portfolio"
+        minSdkVersion 23
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
 
-    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-  }
-
-  flavorDimensions "experience"
-  productFlavors {
-    instant {
-      versionCode 3
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    installed {
-      versionCode 4
-    }
-  }
 
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-      signingConfig signingConfigs.release
+    buildFeatures {
+        viewBinding true
+        compose true
     }
-  }
+
+    compileOptions {
+        sourceCompatibility = 17
+        targetCompatibility = 17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    flavorDimensions += "experience"
+    productFlavors {
+        instant {
+            versionCode 5
+        }
+        installed {
+            versionCode 6
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
 }
 
 dependencies {
-  implementation fileTree(dir: "libs", include: ["*.jar"])
-  implementation libs.androidx.core.ktx
-  implementation libs.androidx.appcompat
-  implementation libs.androidx.constraintlayout
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.constraintlayout
 
-  implementation libs.play.services.instantapps
+    implementation libs.play.services.instantapps
+
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.ui
+    implementation libs.androidx.ui.graphics
+    implementation libs.androidx.ui.tooling.preview
+    implementation libs.androidx.material3
+    debugImplementation libs.androidx.ui.tooling
+    debugImplementation libs.androidx.ui.test.manifest
 }
 
-//1
 project.afterEvaluate {
   //2
   ext.getSigningConfig = { variant ->
@@ -64,85 +85,85 @@ project.afterEvaluate {
   }
   Properties properties = new Properties()
   properties.load(project.rootProject.file('local.properties').newDataInputStream())
-  def bundletool = properties.getProperty('bundletool')
+  def bundletool = "./bundletool-all-1.0.0.jar"
 
-//  android.applicationVariants.all { variant ->
-//    //3
-//    task "assembleSplits${variant.name.capitalize()}"(type: Exec, dependsOn: "bundle",
-//        group: "build") {
-//      //1
-//      workingDir project.rootDir
-//      //2
-//      commandLine = ["java",
-//          "-jar", bundletool, "build-apks",
-//          "--bundle=${project.buildDir}/outputs/bundle/${variant.name}/app-instant-release.aab",
-//          "--output=${project.buildDir}/outputs/splits/${variant.name}/app.apks",
-//          "--connected-device",
-//          "--ks=${getSigningConfig()?.storeFile}",
-//          "--ks-pass=pass:${getSigningConfig()?.storePassword}",
-//          "--ks-key-alias=${getSigningConfig()?.keyAlias}",
-//          "--key-pass=pass:${getSigningConfig()?.keyPassword}",
-//          "--adb=${android.getAdbExe()}"
-//      ]
-//      //3
-//      doFirst {
-//        mkdir "${project.buildDir}/outputs/splits/${variant.name}"
-//        println "Running bundletool:\n${commandLine.join(" ")}"
-//      }
-//      //4
-//      doFirst {
-//        delete "${project.buildDir}/outputs/splits/${variant.name}"
-//      }
-//      //5
-//      doLast {
-//        println "Creating splits for ${variant.name}"
-//      }
-//    }
-//    task "runinstant${variant.name.capitalize()}"(type: ExecInstantApp,
-//        dependsOn: "assembleSplits${variant.name.capitalize()}", group: "build") {
-//      workingDir project.rootDir
-//      androidSdkPath = android.sdkDirectory.path
-//      apksPath = "${project.buildDir}/outputs/splits/${variant.name}/app.apks"
-//    }
-//  }
+  android.applicationVariants.configureEach { variant ->
+    //3
+    task "assembleSplits${variant.name.capitalize()}"(type: Exec, dependsOn: "bundle",
+        group: "build") {
+      //1
+      workingDir project.rootDir
+      //2
+      commandLine = ["java",
+          "-jar", bundletool, "build-apks",
+          "--bundle=${project.buildDir}/outputs/bundle/${variant.name}/app-instant-release.aab",
+          "--output=${project.buildDir}/outputs/splits/${variant.name}/app.apks",
+          "--connected-device",
+          "--ks=${getSigningConfig()?.storeFile}",
+          "--ks-pass=pass:${getSigningConfig()?.storePassword}",
+          "--ks-key-alias=${getSigningConfig()?.keyAlias}",
+          "--key-pass=pass:${getSigningConfig()?.keyPassword}",
+          "--adb=${android.getAdbExe()}"
+      ]
+      //3
+      doFirst {
+        mkdir "${project.buildDir}/outputs/splits/${variant.name}"
+        println "Running bundletool:\n${commandLine.join(" ")}"
+      }
+      //4
+      doFirst {
+        delete "${project.buildDir}/outputs/splits/${variant.name}"
+      }
+      //5
+      doLast {
+        println "Creating splits for ${variant.name}"
+      }
+    }
+    task "runinstant${variant.name.capitalize()}"(type: ExecInstantApp,
+        dependsOn: "assembleSplits${variant.name.capitalize()}", group: "build") {
+      workingDir project.rootDir
+      androidSdkPath = android.sdkDirectory.path
+      apksPath = "${project.buildDir}/outputs/splits/${variant.name}/app.apks"
+    }
+  }
 }
 
 class ExecInstantApp extends Exec {
-  //1
-  @Input
-  //2
-  @Option(option = "androidSdk", description = "Android SDK path")
-  //3
-  String androidSdkPath
+    //1
+    @Input
+    //2
+    @Option(option = "androidSdk", description = "Android SDK path")
+    //3
+    String androidSdkPath
 
-  @Input
-  @Option(option = "apksPath", description = "App apk splits path")
-  //4
-  String apksPath
+    @Input
+    @Option(option = "apksPath", description = "App apk splits path")
+    //4
+    String apksPath
 
-  @Input
-  //5
-  @Optional
-  @Option(option = "url", description = "Url to launch Instant App")
-  //6
-  String url
+    @Input
+    //5
+    @Optional
+    @Option(option = "url", description = "Url to launch Instant App")
+    //6
+    String url
 
-  @Override
-  protected void exec() {
-    if (url != null) {
-      commandLine = [
-          "${androidSdkPath}/extras/google/instantapps/ia",
-          "--debug", "run", apksPath, "-u", url
-      ]
-    } else {
-      commandLine = [
-          "${androidSdkPath}/extras/google/instantapps/ia", "--debug", "run", apksPath
-      ]
+    @Override
+    protected void exec() {
+        if (url != null) {
+            commandLine = [
+                    "${androidSdkPath}/extras/google/instantapps/ia",
+                    "--debug", "run", apksPath, "-u", url
+            ]
+        } else {
+            commandLine = [
+                    "${androidSdkPath}/extras/google/instantapps/ia", "--debug", "run", apksPath
+            ]
+        }
+
+        println "Running ia:\n${commandLine.join(" ")}"
+
+        super.exec()
     }
-
-    println "Running ia:\n${commandLine.join(" ")}"
-
-    super.exec()
-  }
 }
 

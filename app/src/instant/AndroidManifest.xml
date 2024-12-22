@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    android:targetSandboxVersion="2"
-    package="com.prudhvir3ddy.portfolio">
+    android:targetSandboxVersion="2">
 
-  <dist:module dist:instant="true"></dist:module>
+  <dist:module dist:instant="true" />
 </manifest>

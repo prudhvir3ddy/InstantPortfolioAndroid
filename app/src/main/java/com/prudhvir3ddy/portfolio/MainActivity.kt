@@ -5,71 +5,54 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.social_links_1.github_iv
-import kotlinx.android.synthetic.main.social_links_1.gmail_iv
-import kotlinx.android.synthetic.main.social_links_1.linkedin_iv
-import kotlinx.android.synthetic.main.social_links_1.playstore_iv
-import kotlinx.android.synthetic.main.social_links_1.social_media_1
-import kotlinx.android.synthetic.main.social_links_1.twitter_iv
-import kotlinx.android.synthetic.main.social_links_2.facebook_iv
-import kotlinx.android.synthetic.main.social_links_2.instagram_iv
-import kotlinx.android.synthetic.main.social_links_2.medium_iv
-import kotlinx.android.synthetic.main.social_links_2.social_media_2
-import kotlinx.android.synthetic.main.social_links_2.stackinflow_iv
-import kotlinx.android.synthetic.main.social_links_2.youtube_iv
+import com.prudhvir3ddy.portfolio.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+  private lateinit var binding: ActivityMainBinding
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
 
     val anim1 = AnimationUtils.loadAnimation(this, R.anim.left_to_right)
-    social_media_1.startAnimation(anim1)
+    binding.socialLinks1.socialMedia1.startAnimation(anim1)
 
     val anim2 = AnimationUtils.loadAnimation(this, R.anim.right_to_left)
-    social_media_2.startAnimation(anim2)
+    binding.socialLinks2.socialMedia2.startAnimation(anim2)
 
     initSocialMedia()
 
   }
 
   private fun initSocialMedia() {
-    linkedin_iv.setOnClickListener {
+    binding.socialLinks1.linkedinIv.setOnClickListener {
       openUrl(getString(R.string.linkedin))
     }
-    twitter_iv.setOnClickListener {
+    binding.socialLinks1.twitterIv.setOnClickListener {
       openUrl(getString(R.string.twitter))
     }
-    github_iv.setOnClickListener {
+    binding.socialLinks1.githubIv.setOnClickListener {
       openUrl(getString(R.string.github))
     }
-    playstore_iv.setOnClickListener {
+    binding.socialLinks1.playstoreIv.setOnClickListener {
       openUrl(getString(R.string.playstore))
     }
-    gmail_iv.setOnClickListener {
+    binding.socialLinks1.gmailIv.setOnClickListener {
       openUrl(getString(R.string.gmail))
     }
-    instagram_iv.setOnClickListener {
+    binding.socialLinks2.instagramIv.setOnClickListener {
       openUrl(getString(R.string.instagram))
     }
-    medium_iv.setOnClickListener {
+    binding.socialLinks2.mediumIv.setOnClickListener {
       openUrl(getString(R.string.medium))
     }
-    facebook_iv.setOnClickListener {
+    binding.socialLinks2.facebookIv.setOnClickListener {
       openUrl(getString(R.string.facebook))
     }
-    youtube_iv.setOnClickListener {
+    binding.socialLinks2.youtubeIv.setOnClickListener {
       openUrl(getString(R.string.youtube))
-    }
-    stackinflow_iv.setOnClickListener {
-      val sendIntent = Intent()
-      sendIntent.action = Intent.ACTION_SEND
-      sendIntent.putExtra(
-          Intent.EXTRA_TEXT,
-          "Hey check out this cool portfolio app at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID
-      )
-      sendIntent.type = "text/plain"
-      startActivity(sendIntent)
     }
   }
 
