@@ -28,7 +28,6 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
         compose true
     }
 
@@ -64,12 +63,14 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
-    implementation libs.androidx.constraintlayout
 
     implementation libs.play.services.instantapps
 
+    implementation(libs.androidx.core.splashscreen)
+
     implementation platform(libs.androidx.compose.bom)
     implementation libs.androidx.ui
+    implementation libs.androidx.activity.compose
     implementation libs.androidx.ui.graphics
     implementation libs.androidx.ui.tooling.preview
     implementation libs.androidx.material3
@@ -78,68 +79,62 @@ dependencies {
 }
 
 project.afterEvaluate {
-  ext.getSigningConfig = { variant ->
-    return variant.signingConfig ?: variant.buildType.signingConfig
-  }
-  Properties properties = new Properties()
-  properties.load(project.rootProject.file('local.properties').newDataInputStream())
-  def bundletool = "./bundletool-all-1.0.0.jar"
+    ext.getSigningConfig = { variant ->
+        return variant.signingConfig ?: variant.buildType.signingConfig
+    }
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def bundletool = "./bundletool-all-1.0.0.jar"
 
-  android.applicationVariants.configureEach { variant ->
-    task "assembleSplits${variant.name.capitalize()}"(type: Exec, dependsOn: "bundle",
-        group: "build") {
-      //1
-      workingDir project.rootDir
-      //2
-      commandLine = ["java",
-          "-jar", bundletool, "build-apks",
-          "--bundle=${project.buildDir}/outputs/bundle/${variant.name}/app-instant-release.aab",
-          "--output=${project.buildDir}/outputs/splits/${variant.name}/app.apks",
-          "--connected-device",
-          "--ks=${getSigningConfig()?.storeFile}",
-          "--ks-pass=pass:${getSigningConfig()?.storePassword}",
-          "--ks-key-alias=${getSigningConfig()?.keyAlias}",
-          "--key-pass=pass:${getSigningConfig()?.keyPassword}",
-          "--adb=${android.getAdbExe()}"
-      ]
-      doFirst {
-        mkdir "${project.buildDir}/outputs/splits/${variant.name}"
-        println "Running bundletool:\n${commandLine.join(" ")}"
-      }
-      doFirst {
-        delete "${project.buildDir}/outputs/splits/${variant.name}"
-      }
-      doLast {
-        println "Creating splits for ${variant.name}"
-      }
+    android.applicationVariants.configureEach { variant ->
+        task "assembleSplits${variant.name.capitalize()}"(type: Exec, dependsOn: "bundle",
+                group: "build") {
+            //1
+            workingDir project.rootDir
+            //2
+            commandLine = ["java",
+                           "-jar", bundletool, "build-apks",
+                           "--bundle=${project.buildDir}/outputs/bundle/${variant.name}/app-instant-release.aab",
+                           "--output=${project.buildDir}/outputs/splits/${variant.name}/app.apks",
+                           "--connected-device",
+                           "--ks=${getSigningConfig()?.storeFile}",
+                           "--ks-pass=pass:${getSigningConfig()?.storePassword}",
+                           "--ks-key-alias=${getSigningConfig()?.keyAlias}",
+                           "--key-pass=pass:${getSigningConfig()?.keyPassword}",
+                           "--adb=${android.getAdbExe()}"
+            ]
+            doFirst {
+                mkdir "${project.buildDir}/outputs/splits/${variant.name}"
+                println "Running bundletool:\n${commandLine.join(" ")}"
+            }
+            doFirst {
+                delete "${project.buildDir}/outputs/splits/${variant.name}"
+            }
+            doLast {
+                println "Creating splits for ${variant.name}"
+            }
+        }
+        task "runinstant${variant.name.capitalize()}"(type: ExecInstantApp,
+                dependsOn: "assembleSplits${variant.name.capitalize()}", group: "build") {
+            workingDir project.rootDir
+            androidSdkPath = android.sdkDirectory.path
+            apksPath = "${project.buildDir}/outputs/splits/${variant.name}/app.apks"
+        }
     }
-    task "runinstant${variant.name.capitalize()}"(type: ExecInstantApp,
-        dependsOn: "assembleSplits${variant.name.capitalize()}", group: "build") {
-      workingDir project.rootDir
-      androidSdkPath = android.sdkDirectory.path
-      apksPath = "${project.buildDir}/outputs/splits/${variant.name}/app.apks"
-    }
-  }
 }
 
 class ExecInstantApp extends Exec {
-    //1
     @Input
-    //2
     @Option(option = "androidSdk", description = "Android SDK path")
-    //3
     String androidSdkPath
 
     @Input
     @Option(option = "apksPath", description = "App apk splits path")
-    //4
     String apksPath
 
     @Input
-    //5
     @Optional
     @Option(option = "url", description = "Url to launch Instant App")
-    //6
     String url
 
     @Override
