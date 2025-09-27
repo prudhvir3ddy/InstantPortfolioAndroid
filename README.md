@@ -1,5 +1,7 @@
 # InstantPortfolioAndroid
 
+
+
 ## Opt-in to Instant app to experience instant app in playstore
 
 https://support.google.com/googleplay/answer/7240211?hl=en
@@ -38,3 +40,6 @@ than the main app
 Also, select instant app here for uploading instant app build
 ![Screenshot 2024-12-22 at 8 46 46 PM](https://github.com/user-attachments/assets/ded71000-f7e3-46f5-8c53-2ac837b9b372)
 
+## Death by Google 🪦
+
+<img width="894" height="511" alt="Screenshot 2025-09-27 at 9 54 55 AM" src="https://github.com/user-attachments/assets/30907d5e-3750-4759-a9f8-2e4c0b6e2e31" />
